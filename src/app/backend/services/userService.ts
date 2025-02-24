@@ -1,4 +1,4 @@
-import { AddressRepository } from "../reposirories/addressRepository";
+import { addressRepository } from "../reposirories/addressRepository";
 import { getUserByUserId, userRepository } from "../reposirories/userRepository";
 import { UpdateDTO, CreateDTO } from "../../types/userType";
 import { responseError } from "@/lib/utils/response";
@@ -10,7 +10,7 @@ async function create(data: CreateDTO) {
     birthdate: data.birthdate,
   };
 
-  let user = await userRepository.create(userPayload);
+  const user = await userRepository.create(userPayload);
 
   if (!user) {
     throw responseError("Failed to create user", 409);
@@ -24,8 +24,8 @@ async function create(data: CreateDTO) {
     postal_code: data.postal_code,
   };
 
-  let address = await AddressRepository.createAddress(addressPayload);
-  let result = { ...user, ...address };
+  const address = await addressRepository.createAddress(addressPayload);
+  const result = { ...user, ...address };
   return result;
 }
 
@@ -38,7 +38,7 @@ async function getByFirstName(firstname: string, page: number, limit: number) {
 }
 
 async function update(id: number, data: UpdateDTO) {
-  let cekUser = await getUserByUserId(id);
+  const cekUser = await getUserByUserId(id);
 
   if (!Array.isArray(cekUser) || cekUser.length === 0) {
     throw responseError("User not found", 404);
@@ -49,12 +49,12 @@ async function update(id: number, data: UpdateDTO) {
     lastname: data.lastname,
     birthdate: data.birthdate,
   };
-  let user = await userRepository.update(id, userPayload);
+  const user = await userRepository.update(id, userPayload);
   if (!user) {
     throw responseError("Update user failed", 404);
   }
 
-  let cekAddress = await AddressRepository.getAddressByUserId(user.id);
+  const cekAddress = await addressRepository.getAddressByUserId(user.id);
 
   if (!cekAddress) {
     throw responseError("Update address failed", 404);
@@ -67,23 +67,21 @@ async function update(id: number, data: UpdateDTO) {
     province: data.province,
     postal_code: data.postal_code,
   };
-  let address = await AddressRepository.updateAddress(addressPayload);
-  let result = { ...user, ...address };
+  const address = await addressRepository.updateAddress(addressPayload);
+  const result = { ...user, ...address };
   return result;
 }
 
 async function remove(id: number) {
-
-  let cekUser = await getUserByUserId(id);
+  const cekUser = await getUserByUserId(id);
   if (!Array.isArray(cekUser) || cekUser.length === 0) {
-    throw responseError("User tidak ditemukan", 404);
+    throw responseError("User not found", 404);
   }
-
-  let userDeleted = await userRepository.remove(id);
-  if (userDeleted) {
-    await AddressRepository.deleteAddress(cekUser[0].id);
+  const result = await userRepository.remove(id);
+  if (!result) {
+    await addressRepository.deleteAddress(cekUser[0].id);
   } else {
-    throw responseError("User tidak ditemukan", 404);
+    throw responseError("Delete user failed", 404);
   }
   return;
 }

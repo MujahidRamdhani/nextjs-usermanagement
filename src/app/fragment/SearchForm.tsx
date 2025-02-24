@@ -10,7 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface UserSearchFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: { firstname: string }) => void;
   handleReset: () => void;
 }
 

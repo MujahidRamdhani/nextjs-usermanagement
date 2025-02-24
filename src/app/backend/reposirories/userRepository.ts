@@ -36,7 +36,7 @@ async function getAll(page: number = 1, limit: number = 5): Promise<getAllUsersR
       .offset(offset),
   ]);
 
-  let result = {
+  const result = {
     page,
     limit,
     totalUsers: Number(totalUsers[0]?.count) || 0,
@@ -74,7 +74,7 @@ async function getByFirstName(firstname: string, page: number = 1, limit: number
       .limit(limit)
       .offset(offset),
   ]);
-  let result = {
+  const result = {
     page,
     limit,
     totalUsers: Number(totalUsers[0]?.count) || 0,
@@ -117,8 +117,8 @@ async function update(id: number, data: UpdateUserDTO): Promise<User | undefined
 
 async function remove(id: number): Promise<boolean> {
   const result = await db.delete(users).where(eq(users.id, id));
-  // @ts-ignore
-  return result;
+  // @ts-expect-error Result type is not boolean, but we assume it indicates success
+  return result > 0;
 }
 
 export async function getUserByUserId(id: number): Promise<User[]> {

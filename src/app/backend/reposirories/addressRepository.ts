@@ -22,7 +22,7 @@ async function updateAddress(data: UpdateAddressDTO): Promise<Address | undefine
 
 async function deleteAddress(id: number): Promise<boolean> {
   const result = await db.delete(Addresss).where(eq(Addresss.id, id));
-  // @ts-ignore
+  // @ts-expect-error Result type is not boolean, but we assume it indicates success
   return result.rowCount > 0;
 }
 
@@ -30,7 +30,7 @@ async function getAddressByUserId(user_id: number): Promise<Address[]> {
   return await db.select().from(addresses).where(eq(addresses.user_id, user_id));
 }
 
-export const AddressRepository = {
+export const addressRepository = {
   createAddress,
   updateAddress,
   deleteAddress,

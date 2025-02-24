@@ -3,8 +3,8 @@ import { useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { AlertTriangle } from "lucide-react";
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input"> & { name: string }>(
-  ({ className, type, name, ...props }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input"> & { name: string; className?: string }>(
+  ({ className = "", type, name, ...props }, ref) => {
     const {
       formState: { errors },
     } = useFormContext();
@@ -16,7 +16,8 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input"> &
           name={name}
           className={cn(
             "flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-            errors[name] ? "border-red-500 focus-visible:ring-red-500 pr-10" : "border-input"
+            errors[name] ? "border-red-500 focus-visible:ring-red-500 pr-10" : "border-input",
+            className
           )}
           ref={ref}
           {...props}

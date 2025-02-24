@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,9 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { motion } from "framer-motion";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import DeleteButton from "./fragment/DeleteButton";
 import { toast } from "sonner";
 import UserSearchForm from "./fragment/SearchForm";
@@ -34,35 +32,35 @@ export default function UsersTable() {
     defaultValues: { firstname: "" },
   });
 
-  // Fetch users apabila page berubah
+  const fetchUsers = useCallback(
+    async (query = "") => {
+      try {
+        setLoading(true);
+        const url = query ? `/api/users/firstname/${query}?page=${page}&limit=5` : `/api/users?page=${page}&limit=5`;
+
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (!response.ok) {
+          toast.error(result.message);
+          return;
+        }
+
+        setUsers(result.data.users);
+        setTotalPages(result.data.totalPages);
+        setTotalUsers(result.data.totalUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [page]
+  );
+
   useEffect(() => {
     fetchUsers();
-  }, [page]);
-
-  const fetchUsers = async (query = "") => {
-    try {
-      setLoading(true);
-      const url = query
-        ? `http://localhost:3000/api/users/firstname/${query}?page=${page}&limit=5`
-        : `http://localhost:3000/api/users?page=${page}&limit=5`;
-
-      const response = await fetch(url);
-      const result = await response.json();
-
-      if (!response.ok) {
-        toast.error(result.message);
-        return;
-      }
-
-      setUsers(result.data.users);
-      setTotalPages(result.data.totalPages);
-      setTotalUsers(result.data.totalUsers);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [page, fetchUsers]);
 
   // Fungsi untuk melakukan pencarian
   const onSubmit = (data: Input) => {
@@ -142,7 +140,11 @@ export default function UsersTable() {
                     <TableCell>{user.province}</TableCell>
                     <TableCell>{user.postal_code}</TableCell>
                     <TableCell className="flex gap-2">
-                      <Button size="sm" className="bg-amber-400 hover:bg-amber-600" onClick={() => router.push(`./user/${user.id}`)}>
+                      <Button
+                        size="sm"
+                        className="bg-amber-400 hover:bg-amber-600"
+                        onClick={() => router.push(`./user/${user.id}`)}
+                      >
                         Edit
                       </Button>
                       <DeleteButton userId={user.id} handleDelete={handleDelete} />

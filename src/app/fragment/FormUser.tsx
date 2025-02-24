@@ -1,17 +1,16 @@
 "use client";
-import { Inter } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import provinces from "../data/provinces.json";
 import citys from "../data/city.json";
 import postalCodes from "../data/postal_codes.json";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { set, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Calendar as CalendarIcon, Check } from "lucide-react";
 import { registerSchema } from "../validators/user";
@@ -23,6 +22,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { flushSync } from "react-dom";
 
 type Input = z.infer<typeof registerSchema>;
 
@@ -49,7 +49,7 @@ export default function FormUser() {
 
   // city
   const [openCity, setOpenCity] = useState(false);
-  const [selectedCity, setSelectedcity] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   const filteredCities = citys.filter((city) => city.province_name === selectedProvince);
 
   // postal code
@@ -58,25 +58,20 @@ export default function FormUser() {
   const filteredPostalCode = postalCodes.filter((postalCode) => postalCode.city_name === selectedCity);
 
   const router = useRouter();
-  const [isFetchingData, setIsFetchingData] = useState(true);
 
   //apabila province diubah maka city dan postal code di reset
   useEffect(() => {
-    if (!isFetchingData) {
-      setSelectedcity("");
-      form.setValue("city", "", { shouldValidate: false, shouldDirty: true });
-      setSelectedPostalCode("");
-      form.setValue("postal_code", "", { shouldValidate: false, shouldDirty: true });
-    }
-  }, [selectedProvince]);
+    setSelectedCity("");
+    form.setValue("city", "", { shouldValidate: false, shouldDirty: true });
+    setSelectedPostalCode("");
+    form.setValue("postal_code", "", { shouldValidate: false, shouldDirty: true });
+  }, [selectedProvince, form]);
 
   //apabila city diubah maka postal code di reset
   useEffect(() => {
-    if (!isFetchingData) {
-      setSelectedPostalCode("");
-      form.setValue("postal_code", "", { shouldValidate: false, shouldDirty: true });
-    }
-  }, [selectedCity]);
+    setSelectedPostalCode("");
+    form.setValue("postal_code", "", { shouldValidate: false, shouldDirty: true });
+  }, [selectedCity, form]);
 
   //fetch data
   useEffect(() => {
@@ -84,7 +79,6 @@ export default function FormUser() {
       if (!id) return;
 
       try {
-        setIsFetchingData(true);
         const response = await fetch(`/api/users/${id}`);
         const result = await response.json();
 
@@ -101,17 +95,23 @@ export default function FormUser() {
           form.setValue("street", street || "");
           form.setValue("birthdate", new Date(birthdate) || undefined);
           form.setValue("province", province || "");
-          form.setValue("city", city || "");
-          form.setValue("postal_code", postal_code || "");
+        
+          //set state berjalan dengan cara flushSync sebelum ke baris berikutnya
+          flushSync(() => {
+            setSelectedProvince(province || "");
+          });
 
-          setSelectedProvince(province || "");
-          setSelectedcity(city || "");
+          //set state berjalan dengan cara flushSync sebelum ke baris berikutnya
+          flushSync(() => {
+            setSelectedCity(city || "");
+            form.setValue("city", city || "");
+          });
+
           setSelectedPostalCode(postal_code || "");
+          form.setValue("postal_code", postal_code || "");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setTimeout(() => setIsFetchingData(false), 100);
       }
     };
 
@@ -147,6 +147,9 @@ export default function FormUser() {
       <Card className="md:w-[600px]">
         <CardHeader>
           <CardTitle>{id ? "Form Update User" : "Form Create User"}</CardTitle>
+          <Button className="justify-end" variant="outline" onClick={() => router.back()}>
+            Kembali
+          </Button>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -287,7 +290,7 @@ export default function FormUser() {
                                     key={city.name}
                                     value={city.name}
                                     onSelect={(currentId: string) => {
-                                      setSelectedcity(currentId);
+                                      setSelectedCity(currentId);
                                       field.onChange(currentId);
                                       setOpenCity(false);
                                     }}

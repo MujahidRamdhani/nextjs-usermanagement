@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# List User - Fullstack Next.js
 
-## Getting Started
+Aplikasi List User menggunakan Next.js (App Router) dengan fitur CRUD (Create, Read, Update, Delete) dan migrasi database menggunakan PostgreSQL/MySQL. Aplikasi ini menggunakan ORM Drizzle untuk migrasi dan koneksi database serta validasi input dengan Zod.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Berikut merupakan teknologi-teknologi yang digunakan dalam project ini.
+
+| Technology              | Used        |
+|------------------------|------------|
+| **Programming Language** | TypeScript  |
+| **Framework**           | Next.js v14.2.0 |
+| **Database**            | PostgreSQL/MySQL |
+| **Deployment**         | Railway/VPS |
+
+## Libraries
+
+Berikut merupakan libraries yang digunakan dalam project ini.
+
+| Library | Version |
+|---------|---------|
+| drizzle-kit | 0.30.4 |
+| drizzle-orm | 0.39.3 |
+| framer-motion | 12.4.7 |
+| lucide-react | 0.475.0 |
+| next | 14.2.0 |
+| pg | 8.13.3 |
+| postgres | 3.4.5 |
+| react | 18.2.0 |
+| sonner | 2.0.1 |
+| tailwind-merge | 3.0.1 |
+| tailwindcss-animate | 1.0.7 |
+| zod | 3.24.2 |
+
+## Struktur Project
+```
+/src
+ ├── app
+ │   ├── api
+ │   │   ├── users
+ │   │   │   ├── firstname
+ │   │   │   │   └── [firstname]
+ │   │   │   ├── [id]
+ │   ├── backend
+ │   │   ├── controllers
+ │   │   ├── repositories
+ │   │   ├── services
+ │   ├── data
+ │   ├── fragment
+ │   ├── types
+ │   ├── user
+ │   │   ├── new
+ │   │   ├── [id]
+ │   ├── validators
+ ├── components
+ │   ├── ui
+ ├── lib
+ │   ├── drizzle
+ │   │   ├── migrations
+ │   │   │   ├── meta
+ │   ├── utils
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Instalasi dan Penggunaan
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. Clone Repository
+```bash
+ git clone https://github.com/username/repository-name.git
+ cd repository-name
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. Install Dependencies
+```bash
+ npm install
+```
 
-## Learn More
+### 3. Konfigurasi Database
+- Buat database PostgreSQL/MySQL
+- Buat file `.env` berdasarkan contoh `.env.example`
+- Isi konfigurasi database di `.env` seperti berikut:
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=secret
+DB_NAME=db_usermanagement
+DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+```
 
-To learn more about Next.js, take a look at the following resources:
+#### Contoh `.env.example`
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=secret
+DB_NAME=db_usermanagement
+DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+```
+- Jalankan migrasi database:
+```bash
+ npm run drizzle:push
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Menjalankan Aplikasi
+```bash
+ npm run dev
+```
+Akses aplikasi di `http://localhost:3000`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

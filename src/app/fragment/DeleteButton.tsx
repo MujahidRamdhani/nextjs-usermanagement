@@ -13,7 +13,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ userId, handleDelete }) => 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="destructive" className="bg-red-400 hover:bg-red-600" >
+        <Button size="sm" variant="destructive" className="bg-red-400 hover:bg-red-600">
           Delete
         </Button>
       </DialogTrigger>
