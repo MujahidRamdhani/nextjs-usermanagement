@@ -1,0 +1,58 @@
+
+###
+curl -X POST "http://localhost:3000/api/users" \
+     -H "Content-Type: application/json" \
+     -d '{
+          "firstname": "Ahmad123",
+          "lastname": "Ramdhani",
+          "birthdate": "2000-05-15",
+          "street": "Jl. Merdeka",
+          "city": "Bandung",
+          "province": "Jawa Barat",
+          "postal_code": "40115"
+        }'
+
+###
+curl -X GET "http://localhost:3000/api/users/ahmad"
+
+
+###
+curl -X GET "http://localhost:3000/api/users/23"
+
+
+###
+curl -X GET "http://localhost:3000/api/users/ahmad?page=1&limit="
+
+###
+curl -X GET "http://localhost:3000/api/users?page=1&limit=5"
+
+
+
+###
+curl -X GET "http://localhost:3000/api/users?page=1&limit=5"
+
+
+###
+curl -X GET "http://localhost:3000/api/users/firstname/ahmad2"
+
+###
+curl -X GET "http://localhost:3000/api/users/firstname/ahmad?page=3&limit=5"
+
+###
+curl -X PUT "http://localhost:3000/api/users/22" \
+     -H "Content-Type: application/json" \
+    -d '{
+          "firstname": "Ahmad123123",
+          "lastname": "Ramdhani2123",
+          "birthdate": "2000-05-15",
+          "street": "Jl. Merdeka",
+          "city": "Bandung",
+          "province": "Jawa Barat",
+          "postal_code": "40115"
+        }'
+
+###
+curl -X DELETE "http://localhost:3000/api/users/11"
+
+###
+curl -X GET "http://localhost:3000/api/users/11"
