@@ -10,8 +10,8 @@ Berikut merupakan teknologi-teknologi yang digunakan dalam project ini.
 |------------------------|------------|
 | **Programming Language** | TypeScript  |
 | **Framework**           | Next.js v14.2.0 |
-| **Database**            | PostgreSQL/MySQL |
-| **Deployment**         | Railway/VPS |
+| **Database**            | PostgreSQL |
+| **Deployment**         | vps |
 
 ## Libraries
 
